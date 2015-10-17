@@ -1,8 +1,10 @@
-name := """sisdn-admission-service"""
 
-version := "1.0"
+lazy val root = (project in file(".")).settings(
+  name          := """sisdn-admission-service""",
+  version       := "1.0-Alpha",
+  scalaVersion  := "2.11.7"
+)
 
-scalaVersion := "2.11.7"
 
 val akkaV       = "2.4.0"
 val akkaStreamV = "1.0"
@@ -15,4 +17,4 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http-experimental"               % akkaStreamV,
   "com.typesafe.akka" %% "akka-http-spray-json-experimental"    % akkaStreamV,
   "com.typesafe.akka" %% "akka-http-testkit-experimental"       % akkaStreamV,
-  "org.scalatest"     %% "scalatest"                            % scalaTestV % "test")
+  "org.scalatest"     %% "scalatest"                            % scalaTestV % Test)
