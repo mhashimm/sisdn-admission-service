@@ -6,7 +6,7 @@ import akka.pattern.ask
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import sisdn.admission.model.Student
-import sisdn.admission.utils.{AuthorizeAdmission, JsonProtocol}
+import sisdn.admission.utils.{AdmissionAuth, JsonProtocol}
 import scala.concurrent.ExecutionContext
 import scala.language.postfixOps
 import scala.concurrent.duration._
@@ -21,7 +21,7 @@ object admission extends Directives with JsonProtocol {
   val admissionRoute: Route = {
     path("v1" / "add" | "add") {
       post {
-        authorize(AuthorizeAdmission) {
+        authorize(AdmissionAuth) {
           entity(as[List[Student]]) { students =>
             complete {
               ""
