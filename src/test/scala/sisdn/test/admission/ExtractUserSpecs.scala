@@ -1,4 +1,4 @@
-package sisdn.test
+package sisdn.test.admission
 
 import org.scalatest.{Matchers, FlatSpec}
 import sisdn.admission.model.User

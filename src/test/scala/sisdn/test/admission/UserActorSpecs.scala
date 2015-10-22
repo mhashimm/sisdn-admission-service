@@ -1,4 +1,4 @@
-package sisdn.test
+package sisdn.test.admission
 
 import akka.actor.ActorSystem
 import akka.testkit.{ImplicitSender, TestKit}

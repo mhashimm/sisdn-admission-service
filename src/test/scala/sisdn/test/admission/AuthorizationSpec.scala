@@ -1,4 +1,4 @@
-package sisdn.test
+package sisdn.test.admission
 
 import org.scalatest.{FlatSpec, Matchers}
 import sisdn.admission.utils._
