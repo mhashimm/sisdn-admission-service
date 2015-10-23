@@ -18,8 +18,9 @@ object admission extends Directives with JsonProtocol {
   implicit val ec: ExecutionContext = system.dispatcher
   implicit val timeout: Timeout = 1 second
 
+//TODO checkout cake pattern to decouple route from authorization
   val admissionRoute: Route = {
-    path("v1" / "add" | "add") {
+    path("add" / "v1"| "add") {
       post {
         authorize(AdmissionAuth) {
           entity(as[List[Student]]) { students =>
@@ -31,5 +32,4 @@ object admission extends Directives with JsonProtocol {
       }
     }
   }
-
 }

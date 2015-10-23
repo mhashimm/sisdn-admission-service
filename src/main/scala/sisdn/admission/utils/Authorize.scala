@@ -7,7 +7,7 @@ import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import scala.concurrent.duration._
-import sisdn.admission.model.Student
+import sisdn.admission.model.{User, Student}
 import headers._
 import scala.concurrent.{Await, Future, ExecutionContext}
 import scala.language.postfixOps
@@ -31,17 +31,21 @@ object AdmissionAuth extends AdmissionAuth {
     val userF = ExtractUser(jwt)
     val studentsF = Unmarshal(ctx.request.entity).to[List[Student]]
 
-    val result: Future[Boolean] = userF.flatMap { user =>
+    val result = authorize(userF, studentsF)
+
+    Await.result(result, 10 seconds)
+  }
+
+  def authorize(userF: Future[User], studentsF: Future[List[Student]]) = {
+    userF.flatMap { user =>
       studentsF.map { students =>
         if ((students.map(_.org).toSet.size == 1) &&
-              (students.map(_.org).head == user.org) &&
-              (students.map(_.faculty).toSet subsetOf user.faculties))
+          (students.map(_.org).head == user.org) &&
+          (students.map(_.faculty).toSet subsetOf user.faculties))
           true
         else false
       }
     }
-
-    Await.result(result, 10 seconds)
   }
 }
 
