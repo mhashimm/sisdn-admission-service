@@ -1,4 +1,5 @@
 
+//  "-Dconfig.resource=devel.conf"
 scalacOptions ++= Seq("-feature")
 
 lazy val root = (project in file(".")).settings(
@@ -26,3 +27,5 @@ libraryDependencies ++= Seq(
   "org.fusesource.leveldbjni"       %  "leveldbjni-all"                       % "1.8",
   "com.jason-goodwin"               %% "authentikat-jwt"                      % "0.4.1"
 )
+
+fork := true

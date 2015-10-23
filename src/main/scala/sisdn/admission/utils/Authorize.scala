@@ -7,10 +7,9 @@ import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import scala.concurrent.duration._
-import sisdn.admission.model.{User, Student}
+import sisdn.admission.model.Student
 import headers._
 import scala.concurrent.{Await, Future, ExecutionContext}
-import scala.util.control.NonFatal
 import scala.language.postfixOps
 
 
@@ -27,19 +26,23 @@ object AdmissionAuth extends AdmissionAuth {
       case Authorization(OAuth2BearerToken(token)) => token
     } getOrElse ""
 
-    val user = User("","", Set(1), Set(1) )
-    val result: Future[Boolean] = Unmarshal(ctx.request.entity).to[List[Student]].
-      flatMap { xs => Future(xs.map(_.org).toSet).map{
-        case o if o.size == 1 && o.head == user.org => true
-        case _ =>  IllegalRequestException(ErrorInfo("Multiple or wrong organization submission", ""),
-            StatusCodes.Unauthorized)
-          false
-      }.map{
-        case false => false
-        case true  => xs.map(_.faculty).toSet subsetOf user.faculties
-        }
-    }.recover { case NonFatal(e) => false }
+    if (jwt.isEmpty) return false
+
+    val userF = ExtractUser(jwt)
+    val studentsF = Unmarshal(ctx.request.entity).to[List[Student]]
+
+    val result: Future[Boolean] = userF.flatMap { user =>
+      studentsF.map { students =>
+        if ((students.map(_.org).toSet.size == 1) &&
+              (students.map(_.org).head == user.org) &&
+              (students.map(_.faculty).toSet subsetOf user.faculties))
+          true
+        else false
+      }
+    }
 
     Await.result(result, 10 seconds)
   }
 }
+
+

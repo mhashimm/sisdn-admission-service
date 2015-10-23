@@ -13,7 +13,7 @@ class UserActorSpecs(_system: ActorSystem) extends TestKit(_system) with Implici
 
   override def afterAll { TestKit.shutdownActorSystem(system)}
 
-  val actor = system.actorOf(UserActor.props(""), "userActor")
+  //val actor = system.actorOf(UserActor.props(""), "userActor")
 
   /*"UserActor" should {
     "Send acknowledgement of the transaction " in {

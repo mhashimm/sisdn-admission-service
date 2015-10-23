@@ -11,7 +11,7 @@ import scala.language.postfixOps
 import scala.concurrent.ExecutionContext
 
 trait BaseFixture {
-  ConfigFactory.load().withValue("admission.key", ConfigValueFactory.fromAnyRef("mySecret"))
+  val config = ConfigFactory.load()
 }
 
 trait ContextFixture extends BaseFixture{
@@ -23,9 +23,10 @@ trait ContextFixture extends BaseFixture{
 
 trait JwtFixture extends BaseFixture {
   val jwtHed = JwtHeader("HS256")
-  val claimsSet = JwtClaimsSet("""{"departments" : [1], "subject" : "subject", "org" : "org", "faculties" : [1]}""")
-  val jwt: String = JsonWebToken(jwtHed, claimsSet, ConfigFactory.load().getString("admission.key"))
-  val stdJson =
-    """[{"firstName" : "first", "secondName" : "second", "thirdName" : "third", "fourthName" : "fourth",
-      |"org" : "org", "faculty" : 1, "program" : 1}]""".stripMargin
+  val claimsSet = JwtClaimsSet(
+    """{"departments" : [1], "subject" : "subject",
+      |"org" : "org", "faculties" : [1]}""".stripMargin)
+  val jwt: String = JsonWebToken(jwtHed, claimsSet, "mySecret")
+  val stdJson = """[{"firstName" : "first", "secondName" : "second", "thirdName" : "third",
+      |"fourthName" : "fourth", "org" : "org", "faculty" : 1, "program" : 1}]""".stripMargin
 }

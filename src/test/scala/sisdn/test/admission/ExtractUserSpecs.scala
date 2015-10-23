@@ -1,18 +1,38 @@
 package sisdn.test.admission
 
+import akka.http.scaladsl.model.IllegalRequestException
+import authentikat.jwt.{JwtClaimsSet, JsonWebToken}
+import org.scalatest.concurrent._
+import org.scalatest.time._
 import org.scalatest.{Matchers, FlatSpec}
-import sisdn.admission.model.User
+import spray.json.DeserializationException
 import sisdn.admission.utils.ExtractUser
-import scala.concurrent.duration._
 import scala.language.postfixOps
 
-import scala.concurrent.Await
+class ExtractUserSpecs extends FlatSpec with Matchers with ScalaFutures with JwtFixture {
 
-class ExtractUserSpecs extends FlatSpec with Matchers with JwtFixture with ContextFixture {
+  implicit val defaultPatienceConfig = PatienceConfig(timeout = Span(2, Seconds), interval = Span(5, Millis))
 
   "User Extraction" should "succeed for correct token" in {
-    val user:User = Await.result(new ExtractUser().apply(jwt), 10 seconds).get
-    user.subject shouldEqual "subject"
-    user.departments shouldEqual  Set(1)
+    val result = ExtractUser(jwt)
+    whenReady(result){ user =>
+      user.subject shouldEqual "subject"
+      user.departments shouldEqual Set(1)
+    }
+  }
+
+  it should "fail for invalid token" in {
+    val result = ExtractUser("no.key.exists")
+    whenReady(result.failed){ e =>
+      e shouldBe a [IllegalRequestException]
+      e.asInstanceOf[IllegalRequestException].info.summary shouldEqual "Invalid authorization token"
+    }
+  }
+
+  it should "fail for invalid claims" in {
+    val result = ExtractUser(JsonWebToken(jwtHed, JwtClaimsSet("{}"), "mySecret"))
+    whenReady(result.failed) { e =>
+      e shouldBe a [DeserializationException]
+    }
   }
 }
