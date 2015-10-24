@@ -40,11 +40,7 @@ class AdmissionRouteSpecs extends FlatSpec with Matchers with ScalatestRouteTest
   }
 
   it should """Accept request for /v1 route as the default route""" in {
-<<<<<<< HEAD
-    Post("/add/v1", HttpEntity(`application/json`, stdJson)).addHeader(hd) ~> admissionRoute ~> check {
-=======
     Post("/v1/add", HttpEntity(`application/json`, stdJson)) ~> admissionRoute ~> check {
->>>>>>> refs/heads/experimental
       status shouldBe StatusCodes.OK
     }
   }
