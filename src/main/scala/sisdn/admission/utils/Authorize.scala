@@ -1,8 +1,8 @@
 package sisdn.admission.utils
 
-import akka.http.scaladsl.model._
-import akka.actor.ActorSystem
+import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.server.RequestContext
+<<<<<<< HEAD
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
@@ -48,5 +48,14 @@ object AdmissionAuth extends AdmissionAuth {
     }
   }
 }
+=======
+import authentikat.jwt.JsonWebToken
+import com.typesafe.config.ConfigFactory
+>>>>>>> refs/heads/experimental
 
+class ValidateToken extends ((RequestContext) => Boolean) with JsonProtocol {
 
+  def apply(ctx: RequestContext) = ctx.request.headers.collectFirst {
+    case Authorization(OAuth2BearerToken(token)) => token
+                    }.exists(JsonWebToken.validate(_, ConfigFactory.load().getString("admission.key")))
+}
