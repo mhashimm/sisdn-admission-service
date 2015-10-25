@@ -1,4 +1,4 @@
-package sisdn.test.admission
+package sisdn.admission.test
 
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server._

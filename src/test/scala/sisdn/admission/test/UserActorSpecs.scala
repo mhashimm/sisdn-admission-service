@@ -1,4 +1,4 @@
-package sisdn.test.admission
+package sisdn.admission.test
 
 import akka.actor.ActorSystem
 import akka.testkit.{ImplicitSender, TestKit}
@@ -11,7 +11,7 @@ class UserActorSpecs(_system: ActorSystem) extends TestKit(_system) with Implici
 
   def this() = this(ActorSystem("UserActorSpec"))
 
-  override def afterAll { TestKit.shutdownActorSystem(system)}
+  override def afterAll() { TestKit.shutdownActorSystem(system)}
 
   //val actor = system.actorOf(UserActor.props(""), "userActor")
 
