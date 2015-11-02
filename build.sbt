@@ -8,6 +8,7 @@ lazy val root = (project in file(".")).settings(
   scalaVersion  := "2.11.7"
 )
 
+resolvers += "dnvriend at bintray" at "http://dl.bintray.com/dnvriend/maven"
 
 val akkaV       = "2.4.0"
 val akkaStreamV = "1.0"
@@ -25,7 +26,8 @@ libraryDependencies ++= Seq(
   "org.scalatest"                   %% "scalatest"                            % scalaTestV % Test,
   "org.iq80.leveldb"                %  "leveldb"                              % "0.7",
   "org.fusesource.leveldbjni"       %  "leveldbjni-all"                       % "1.8",
-  "com.jason-goodwin"               %% "authentikat-jwt"                      % "0.4.1"
+  "com.jason-goodwin"               %% "authentikat-jwt"                      % "0.4.1",
+  "com.github.dnvriend"             %% "akka-persistence-inmemory"            % "1.1.5" % Test
 )
 
 fork := true
